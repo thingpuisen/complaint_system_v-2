@@ -1,0 +1,40 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}My Complaints{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>My Complaints</h2>
+    {% if complaints %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr>
+                    <td><strong>{{ complaint.get_category_display }}</strong></td>
+                    <td>{{ complaint.title }}</td>
+                    <td>
+                        <span class="badge badge-{{ complaint.status }}">
+                            {{ complaint.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ complaint.created_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ complaint.description|truncatewords:20 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't submitted any complaints yet.</p>
+        <a href="{% url 'submit_complaint' %}" class="btn btn-primary">Submit Your First Complaint</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Register</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div style="color: #721c24; background: #f8d7da; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="id_username">Username:</label>
+            <input type="text" name="username" id="id_username" maxlength="150" required value="{{ form.username.value|default:'' }}">
+            {% if form.username.errors %}
+                <small style="color: #dc3545;">{{ form.username.errors|striptags }}</small>
+            {% endif %}
+            <small style="color: #6c757d;">Required. 150 characters or fewer.</small>
+        </div>
+        <div class="form-group">
+            <label for="id_name">Name:</label>
+            <input type="text" name="name" id="id_name" maxlength="200" required value="{{ form.name.value|default:'' }}">
+            {% if form.name.errors %}
+                <small style="color: #dc3545;">{{ form.name.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_contact">Contact:</label>
+            <input type="text" name="contact" id="id_contact" maxlength="15" required value="{{ form.contact.value|default:'' }}">
+            {% if form.contact.errors %}
+                <small style="color: #dc3545;">{{ form.contact.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_address">Address:</label>
+            <textarea name="address" id="id_address" rows="3" required>{{ form.address.value|default:'' }}</textarea>
+            {% if form.address.errors %}
+                <small style="color: #dc3545;">{{ form.address.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_password1">Password:</label>
+            <input type="password" name="password1" id="id_password1" required>
+            {% if form.password1.errors %}
+                <small style="color: #dc3545;">{{ form.password1.errors|striptags }}</small>
+            {% endif %}
+            <small style="color: #6c757d;">Your password must contain at least 8 characters.</small>
+        </div>
+        <div class="form-group">
+            <label for="id_password2">Confirm Password:</label>
+            <input type="password" name="password2" id="id_password2" required>
+            {% if form.password2.errors %}
+                <small style="color: #dc3545;">{{ form.password2.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p style="margin-top: 1rem;">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}

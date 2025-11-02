@@ -1,0 +1,14 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Welcome, {{ user.name }}!</h2>
+    <p>Welcome to the Complaint Management System. Use the navigation above to submit complaints or view your existing complaints.</p>
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'submit_complaint' %}" class="btn btn-primary">Submit New Complaint</a>
+        <a href="{% url 'my_complaints' %}" class="btn" style="margin-left: 1rem;">View My Complaints</a>
+    </div>
+</div>
+{% endblock %}
