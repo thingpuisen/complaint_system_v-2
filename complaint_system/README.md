@@ -24,9 +24,32 @@ A Django-based complaint management system with separate portals for citizens an
 
 ## Installation
 
+### Quick Setup (Automated)
+
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/thingpuisen/complaint_system_v-2.git
+   cd complaint_system
+   ```
+
+2. **Run the setup script** (optional but recommended)
+   ```bash
+   python setup.py
+   ```
+   This will automatically:
+   - Create a virtual environment
+   - Install all dependencies
+   - Run database migrations
+   - Collect static files
+   - Help you create a superuser
+
+### Manual Setup
+
+If you prefer to set up manually:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/thingpuisen/complaint_system_v-2.git
    cd complaint_system
    ```
 
@@ -50,12 +73,12 @@ A Django-based complaint management system with separate portals for citizens an
    pip install -r requirements.txt
    ```
 
-5. **Run migrations**
+5. **Run migrations** (creates the database)
    ```bash
    python manage.py migrate
    ```
 
-6. **Create a superuser**
+6. **Create a superuser** (for Django admin access)
    ```bash
    python manage.py createsuperuser
    ```
@@ -69,6 +92,24 @@ A Django-based complaint management system with separate portals for citizens an
    ```bash
    python manage.py runserver
    ```
+
+9. **Access the application**
+   - Citizen Portal: http://127.0.0.1:8000/
+   - Authority Portal: http://127.0.0.1:8000/authority/
+   - Django Admin: http://127.0.0.1:8000/admin/
+
+### Setting Up Authority Staff Accounts
+
+After creating a superuser, you need to create staff accounts for authority departments:
+
+1. Go to Django admin: http://127.0.0.1:8000/admin/
+2. Navigate to **Users** section
+3. Create new users or edit existing ones
+4. For each authority staff member:
+   - Check **Staff status**
+   - Select their **Department** (admin, power, health, or works)
+   - Set a secure password
+5. They can now login at: http://127.0.0.1:8000/authority/
 
 ## Project Structure
 
@@ -109,10 +150,14 @@ complaint_system/
 
 ## Important Notes
 
-- **Database**: The project uses SQLite for development. For production, configure a PostgreSQL or MySQL database in `settings.py`
-- **Media Files**: User-uploaded files are stored in the `media/` directory (not tracked in git)
-- **Static Files**: Run `python manage.py collectstatic` after deployment
-- **Environment Variables**: For production, set `DEBUG=False` and configure `SECRET_KEY`, database credentials, and other sensitive settings
+- **Database**: The project uses SQLite for development. When you clone the repo, you'll get a fresh empty database. Run `python manage.py migrate` to create the database structure.
+- **Media Files**: User-uploaded files are stored in the `media/` directory (created automatically, not in git)
+- **Static Files**: The `staticfiles/` directory is generated automatically when you run `collectstatic` (not in git)
+- **Fresh Install**: When cloning on a new system, you'll need to:
+  - Create a new database (via migrations)
+  - Create a superuser account
+  - Create staff accounts for authority departments
+- **Production**: For production deployment, set `DEBUG=False` in `settings.py` and configure `SECRET_KEY`, database credentials, and other sensitive settings
 
 ## Security Features
 
