@@ -5,38 +5,47 @@
 {% block content %}
 <div class="card">
     <h2>Submit a Complaint</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_category">Category:</label>
-            <select name="category" id="id_category" required>
-                <option value="">-- Select Category --</option>
-                <option value="electricity">Electricity</option>
-                <option value="road">Road</option>
-                <option value="sanitation">Sanitation</option>
-                <option value="water_supply">Water Supply</option>
-                <option value="others">Others</option>
-            </select>
+            <label for="{{ form.category.id_for_label }}">Category:</label>
+            {{ form.category }}
             {% if form.category.errors %}
-                <small style="color: #dc3545;">{{ form.category.errors|striptags }}</small>
+            <small style="color: #dc3545;">{{ form.category.errors|striptags }}</small>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_title">Title:</label>
-            <input type="text" name="title" id="id_title" maxlength="200" required value="{{ form.title.value|default:'' }}">
+            <label for="{{ form.title.id_for_label }}">Title:</label>
+            {{ form.title }}
             {% if form.title.errors %}
-                <small style="color: #dc3545;">{{ form.title.errors|striptags }}</small>
+            <small style="color: #dc3545;">{{ form.title.errors|striptags }}</small>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_description">Description:</label>
-            <textarea name="description" id="id_description" rows="5" required>{{ form.description.value|default:'' }}</textarea>
+            <label for="{{ form.description.id_for_label }}">Description:</label>
+            {{ form.description }}
             {% if form.description.errors %}
-                <small style="color: #dc3545;">{{ form.description.errors|striptags }}</small>
+            <small style="color: #dc3545;">{{ form.description.errors|striptags }}</small>
             {% endif %}
         </div>
-        <button type="submit" class="btn btn-primary">Submit Complaint</button>
-        <a href="{% url 'home' %}" class="btn" style="margin-left: 1rem;">Cancel</a>
+        <div class="form-group">
+            <label for="{{ form.priority.id_for_label }}">Priority:</label>
+            {{ form.priority }}
+            {% if form.priority.errors %}
+            <small style="color: #dc3545;">{{ form.priority.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.photo.id_for_label }}">Photo (optional):</label>
+            {{ form.photo }}
+            <small style="color: hsl(var(--muted-foreground)); display: block; margin-top: 0.25rem;">Attach a clear
+                image to help authorities understand the issue better.</small>
+            {% if form.photo.errors %}
+            <small style="color: #dc3545;">{{ form.photo.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding:0.75rem 2rem;font-size:0.95rem;font-weight:500;width:auto;min-width:120px;">Submit Complaint</button>
+        <a href="{% url 'home' %}" class="btn" style="margin-left: 1rem;padding:0.75rem 2rem;font-size:0.95rem;font-weight:500;width:auto;min-width:120px;">Cancel</a>
     </form>
 </div>
 {% endblock %}

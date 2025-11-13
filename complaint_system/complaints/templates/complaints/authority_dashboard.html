@@ -1,0 +1,146 @@
+{% extends 'complaints/admin_base.html' %}
+
+{% block title %}{{ dashboard_title }}{% endblock %}
+{% block header_tone %}{{ dashboard_tone }}{% endblock %}
+{% block header_icon %}<span>{{ dashboard_icon }}</span>{% endblock %}
+{% block header_title %}{{ dashboard_title }}{% endblock %}
+{% block header_subtitle %}{{ dashboard_subtitle }}{% endblock %}
+
+{% block content %}
+<section class="stats-grid">
+    {% for card in stats %}
+    <article class="stats-card">
+        <div class="stats-card-header">
+            <span class="stats-label">{{ card.title }}</span>
+            <div class="stats-icon {{ card.tone }}">
+                <span>{{ card.icon }}</span>
+            </div>
+        </div>
+        <div class="stats-value">{{ card.value }}</div>
+        {% if card.description %}
+        <p class="stats-description">{{ card.description }}</p>
+        {% endif %}
+    </article>
+    {% endfor %}
+</section>
+
+<section class="dashboard-section">
+    <div>
+        <h2>Complaints Overview</h2>
+        <p>Track submissions, prioritise responses, and monitor departmental progress.</p>
+    </div>
+
+    <form method="get" class="filter-bar admin-form">
+        <div>
+            <label for="search-input">Search</label>
+            <input id="search-input" type="text" name="q" placeholder="Search by title, citizen or location"
+                value="{{ filters.q }}">
+        </div>
+
+        <div>
+            <label for="status-filter">Status</label>
+            <select id="status-filter" name="status">
+                {% for value, label in status_choices %}
+                {% if filters.status == value %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+                {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="priority-filter">Priority</label>
+            <select id="priority-filter" name="priority">
+                {% for value, label in priority_choices %}
+                {% if filters.priority == value %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+                {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if show_department %}
+        <div>
+            <label for="department-filter">Department</label>
+            <select id="department-filter" name="department">
+                {% for value, label in department_choices %}
+                {% if filters.department == value %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+                {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div style="align-self: end;">
+            <button type="submit" class="admin-btn admin-btn-outline"
+                style="padding:0.75rem 2rem;font-size:0.95rem;font-weight:500;width:auto;min-width:120px;">Apply
+                Filters</button>
+        </div>
+    </form>
+
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    {% if show_department %}
+                    <th>Department</th>
+                    {% endif %}
+                    <th>Location</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if complaints %}
+                {% for complaint in complaints %}
+                <tr>
+                    <td class="font-mono">{{ complaint.reference }}</td>
+                    <td>{{ complaint.title }}</td>
+                    {% if show_department %}
+                    <td>
+                        {% if complaint.department_slug %}
+                        <span class="badge-chip badge-dept-{{ complaint.department_slug }}">{{ complaint.department }}</span>
+                        {% else %}
+                        <span class="badge-chip badge-dept-unassigned">Unassigned</span>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    <td class="text-muted">{{ complaint.location }}</td>
+                    <td>
+                        <span class="badge-chip {{ complaint.priority.badge }}">{{ complaint.priority.label }}</span>
+                    </td>
+                    <td>
+                        <span class="badge-chip {{ complaint.status.badge }}">{{ complaint.status.label }}</span>
+                    </td>
+                    <td class="text-muted">{{ complaint.created_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        <a href="{{ complaint.detail_url }}?next={{ request.get_full_path|urlencode }}"
+                            class="admin-link">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="{% if show_department %}8{% else %}7{% endif %}">
+                        <div class="admin-empty">
+                            No complaints match the selected filters.
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

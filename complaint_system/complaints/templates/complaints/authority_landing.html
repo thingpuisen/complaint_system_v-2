@@ -1,0 +1,205 @@
+{% extends 'complaints/admin_base.html' %}
+
+{% block title %}Authority Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-actions {
+        display: none !important;
+    }
+
+    .admin-landing {
+        min-height: calc(100vh - 200px);
+        padding: 3rem 2rem;
+    }
+
+    .landing-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .landing-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .landing-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0 0 0.75rem;
+        letter-spacing: -0.02em;
+    }
+
+    .landing-header p {
+        font-size: 1.125rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .dept-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .dept-card {
+        display: block;
+        padding: 2rem 1.5rem;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dept-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dept-card:hover {
+        transform: translateY(-4px);
+        border-color: #667eea;
+        box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
+    }
+
+    .dept-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .dept-card strong {
+        display: block;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        transition: color 0.3s;
+    }
+
+    .dept-card:hover strong {
+        color: #667eea;
+    }
+
+    .dept-card .muted {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        transition: color 0.3s;
+    }
+
+    .dept-card:hover .muted {
+        color: #9ca3af;
+    }
+
+    .info-text {
+        text-align: center;
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-top: 2rem;
+        padding: 1.25rem;
+        background: #f9fafb;
+        border-radius: 8px;
+    }
+
+    .citizen-section {
+        margin-top: 3rem;
+        padding-top: 2.5rem;
+        border-top: 1px solid #e5e7eb;
+        text-align: center;
+    }
+
+    .citizen-section p {
+        color: #6b7280;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .citizen-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #667eea;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+    .citizen-link:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+    }
+
+    .citizen-link svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s;
+    }
+
+    .citizen-link:hover svg {
+        transform: translateX(4px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="admin-landing">
+    <div class="landing-container">
+        <div class="landing-header">
+            <h1>Authority Portal</h1>
+            <p>Select your department to access your dashboard</p>
+        </div>
+
+        <div class="dept-grid">
+            <a class="dept-card" href="{% url 'authority_login' %}?next=/authority/dashboard/">
+                <strong>Central Administration</strong>
+                <div class="muted">Full system dashboard</div>
+            </a>
+
+            {% for slug, label in department_choices %}
+            {% if slug != 'admin' %}
+            <a class="dept-card" href="{% url 'authority_login' %}?next=/authority/{{ slug }}/">
+                <strong>{{ label }}</strong>
+                <div class="muted">Department dashboard</div>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <p class="info-text">
+            Clicking a department will redirect you to login if you are not signed in, then return you to the selected
+            dashboard.
+        </p>
+
+        <div class="citizen-section">
+            <p>Are you a citizen?</p>
+            <a href="{% url 'login' %}" class="citizen-link">
+                Sign in to Citizen Portal
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

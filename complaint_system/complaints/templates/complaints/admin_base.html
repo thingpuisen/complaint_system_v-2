@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Authority Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'complaints/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'complaints/css/admin.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="admin-app">
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-brand">
+                <a href="{% url 'authority_landing' %}" class="admin-back-btn" title="Back to Authority Portal">
+                    <span>←</span>
+                </a>
+                <div class="admin-icon {% block header_tone %}tone-admin{% endblock %}">
+                    {% block header_icon %}
+                    <span>🏛️</span>
+                    {% endblock %}
+                </div>
+                <div class="admin-title-group">
+                    <h1>{% block header_title %}Operations Dashboard{% endblock %}</h1>
+                    <p>{% block header_subtitle %}Oversight & Monitoring{% endblock %}</p>
+                </div>
+            </div>
+            <div class="admin-actions">
+                {% if jwt_user or request.user.is_authenticated %}
+                <div class="admin-badge">
+                    <span>Logged in as</span>
+                    <strong>{% if jwt_user %}{{ jwt_user.name|default:jwt_user.get_full_name|default:jwt_user.username }}{% elif request.user.is_authenticated %}{{ request.user.name|default:request.user.get_full_name|default:request.user.username }}{% endif %}</strong>
+                </div>
+                <div class="admin-avatar">
+                    {% if jwt_user %}
+                        {% with jwt_user.name|default:jwt_user.username as display_name %}
+                        {{ display_name|first|upper }}{{ display_name|slice:"1:2"|upper }}
+                        {% endwith %}
+                    {% elif request.user.is_authenticated %}
+                        {% with request.user.name|default:request.user.username as display_name %}
+                        {{ display_name|first|upper }}{{ display_name|slice:"1:2"|upper }}
+                        {% endwith %}
+                    {% endif %}
+                </div>
+                <a href="{% url 'authority_logout' %}" class="admin-btn admin-btn-outline" style="padding:0.75rem 2rem;font-size:0.95rem;font-weight:500;width:auto;min-width:120px;">Logout</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        {% if messages %}
+        <div class="admin-messages">
+            {% for message in messages %}
+            <div class="admin-message{% if message.tags == 'error' %} error{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

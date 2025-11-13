@@ -6,35 +6,45 @@
 <div class="card">
     <h2>My Complaints</h2>
     {% if complaints %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Submitted</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for complaint in complaints %}
-                <tr>
-                    <td><strong>{{ complaint.get_category_display }}</strong></td>
-                    <td>{{ complaint.title }}</td>
-                    <td>
-                        <span class="badge badge-{{ complaint.status }}">
-                            {{ complaint.get_status_display }}
-                        </span>
-                    </td>
-                    <td>{{ complaint.created_at|date:"M d, Y H:i" }}</td>
-                    <td>{{ complaint.description|truncatewords:20 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Title</th>
+                <th>Photo</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr>
+                <td><strong>{{ complaint.get_category_display }}</strong></td>
+                <td>{{ complaint.title }}</td>
+                <td>
+                    {% if complaint.photo %}
+                    <a href="{{ complaint.photo.url }}" target="_blank" class="photo-link">
+                        <img src="{{ complaint.photo.url }}" alt="Complaint photo" class="photo-thumbnail">
+                    </a>
+                    {% else %}
+                    <span style="color: hsl(var(--muted-foreground));">No photo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-{{ complaint.status }}">
+                        {{ complaint.get_status_display }}
+                    </span>
+                </td>
+                <td>{{ complaint.created_at|date:"M d, Y H:i" }}</td>
+                <td>{{ complaint.description|truncatewords:20 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     {% else %}
-        <p>You haven't submitted any complaints yet.</p>
-        <a href="{% url 'submit_complaint' %}" class="btn btn-primary">Submit Your First Complaint</a>
+    <p>You haven't submitted any complaints yet.</p>
+    <a href="{% url 'submit_complaint' %}" class="btn btn-primary" style="padding:0.75rem 2rem;font-size:0.95rem;font-weight:500;width:auto;min-width:120px;">Submit Your First Complaint</a>
     {% endif %}
 </div>
 {% endblock %}

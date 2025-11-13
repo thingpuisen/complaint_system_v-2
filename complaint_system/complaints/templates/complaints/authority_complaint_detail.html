@@ -1,0 +1,96 @@
+{% extends 'complaints/admin_base.html' %}
+
+{% block title %}Complaint CMP-{{ complaint.id|add:"00000"|slice:"-5" }}{% endblock %}
+{% block header_tone %}{{ dashboard_tone }}{% endblock %}
+{% block header_icon %}<span>{{ dashboard_icon }}</span>{% endblock %}
+{% block header_title %}{{ dashboard_title }}{% endblock %}
+{% block header_subtitle %}{{ dashboard_subtitle }}{% endblock %}
+
+{% block content %}
+<div class="admin-grid-two">
+    <section class="admin-card">
+        <h2 style="margin-bottom: 1.25rem;">Summary</h2>
+        <div class="admin-detail-grid">
+            <div class="detail-block">
+                <h3>Citizen</h3>
+                <p style="font-weight: 600;">{{ complaint.user.name|default:complaint.user.username }}</p>
+                <p class="text-muted">{{ complaint.user.contact }}</p>
+                <p class="text-muted">{{ complaint.user.email }}</p>
+            </div>
+            <div class="detail-block">
+                <h3>Submitted</h3>
+                <p style="font-weight: 600;">{{ complaint.created_at|date:"M d, Y H:i" }}</p>
+                <p class="text-muted">Updated {{ complaint.updated_at|timesince }} ago</p>
+            </div>
+            <div class="detail-block">
+                <h3>Category</h3>
+                <p style="font-weight: 600;">{{ complaint.get_category_display }}</p>
+            </div>
+            <div class="detail-block">
+                <h3>Location</h3>
+                <p style="font-weight: 600;">{{ complaint.location|default:complaint.user.address }}</p>
+            </div>
+            <div class="detail-block">
+                <h3>Status</h3>
+                <span class="badge-chip {{ status_display.badge }}">{{ status_display.label }}</span>
+            </div>
+            <div class="detail-block">
+                <h3>Priority</h3>
+                <span class="badge-chip {{ priority_display.badge }}">{{ priority_display.label }}</span>
+            </div>
+        </div>
+
+        <div class="detail-block" style="margin-top: 1.5rem;">
+            <h3>Title</h3>
+            <p style="font-weight: 600; font-size: 1.1rem;">{{ complaint.title }}</p>
+        </div>
+
+        <div class="detail-block" style="margin-top: 1rem;">
+            <h3>Description</h3>
+            <p style="line-height: 1.6; color: var(--admin-text);">{{ complaint.description }}</p>
+        </div>
+
+        {% if complaint.photo %}
+        <div class="detail-block" style="margin-top: 1rem;">
+            <h3>Attachment</h3>
+            <a href="{{ complaint.photo.url }}" target="_blank" class="admin-link">View uploaded photo</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <aside class="admin-card">
+        <h2 style="margin-bottom: 1.25rem;">Update Complaint</h2>
+        <form method="post" class="admin-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ return_url }}">
+            <div>
+                <label for="{{ form.status.id_for_label }}">Status</label>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <small style="color: #d14350;">{{ form.status.errors|striptags }}</small>
+                {% endif %}
+            </div>
+            <div>
+                <label for="{{ form.assigned_department.id_for_label }}">Assigned Department</label>
+                {{ form.assigned_department }}
+                {% if form.assigned_department.errors %}
+                <small style="color: #d14350;">{{ form.assigned_department.errors|striptags }}</small>
+                {% endif %}
+            </div>
+            <div>
+                <label for="{{ form.priority.id_for_label }}">Priority</label>
+                {{ form.priority }}
+                {% if form.priority.errors %}
+                <small style="color: #d14350;">{{ form.priority.errors|striptags }}</small>
+                {% endif %}
+            </div>
+            <button type="submit" class="admin-btn" style="padding:0.75rem 2rem;font-size:0.95rem;font-weight:500;width:auto;min-width:120px;">
+                Save Changes
+            </button>
+            <a href="{{ return_url }}" class="admin-link" style="display: inline-block; margin-top: 0.75rem;">
+                ← Back to list
+            </a>
+        </form>
+    </aside>
+</div>
+{% endblock %}
